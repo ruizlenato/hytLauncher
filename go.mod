@@ -3,6 +3,7 @@ module hytale
 go 1.25.3
 
 require (
+	github.com/google/uuid v1.6.0
 	github.com/itchio/headway v0.0.0-20251229214354-da882c8b5dd4
 	github.com/itchio/lake v0.0.0-20200305150023-cc4284ec2b2a
 	github.com/itchio/savior v0.0.0-20200618124148-6034e878d75b
@@ -25,11 +26,9 @@ require (
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/gogs/chardet v0.0.0-20191104214054-4b6791f73a28 // indirect
 	github.com/golang/protobuf v1.4.2 // indirect
-	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/itchio/arkive v0.0.0-20200618123031-1a30392a8cfe // indirect
 	github.com/itchio/dskompress v0.0.0-20190702113811-5e6f499be697 // indirect
-	github.com/itchio/go-brotli v0.0.0-20190702114328-3f28d645a45c // indirect
 	github.com/itchio/httpkit v0.0.0-20200618110940-5044e418b971 // indirect
 	github.com/itchio/kompress v0.0.0-20200301155538-5c2eecce9e51 // indirect
 	github.com/itchio/ox v0.0.0-20200301160301-4e131878ba64 // indirect

@@ -1,8 +1,10 @@
 package main
 
 import (
+	"crypto/md5"
 	"crypto/rand"
 	"encoding/base64"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -205,6 +207,14 @@ func generateSessionJwt() string {
 	return b64json(head) + "." + b64json(sesTok) + "." + fakeSign();
 }
 
+
+func usernameToUuid(username string) string {
+	m := md5.New();
+	m.Write([]byte(username));
+	h := hex.EncodeToString(m.Sum(nil));
+
+	return h[:8]+"-"+h[8:12]+"-"+h[12:16]+"-"+h[16:20]+"-"+h[20:32];
+}
 
 func generateIdentityJwt() string {
 	head := jwtHeader{

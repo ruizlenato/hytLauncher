@@ -1,8 +1,6 @@
 package main
 
 import (
-	"crypto/md5"
-	"encoding/hex"
 	"fmt"
 	"io"
 	"net/http"
@@ -177,15 +175,11 @@ func launchGame(version int, channel, username string, uuid string) {
 				"--java-exec",
 				javaBin,
 				"--auth-mode",
-				"authenticated",
+				"offline",
 				"--uuid",
 				uuid,
 				"--name",
-				username,
-				"--identity-token",
-				generateIdentityJwt(),
-				"--session-token",
-				generateSessionJwt());
+				username);
 
 		e.Start();
 
@@ -197,13 +191,53 @@ func launchGame(version int, channel, username string, uuid string) {
 
 }
 
-func usernameToUuid(username string) string {
-	m := md5.New();
-	m.Write([]byte(username));
-	h := hex.EncodeToString(m.Sum(nil));
 
-	return h[:8]+"-"+h[8:12]+"-"+h[12:16]+"-"+h[16:20]+"-"+h[20:32];
+func checkVerExist(version int, channel string) bool {
+	uri := guessPatchUrlNoAuth(runtime.GOARCH, runtime.GOOS, channel, 0, version);
+	req, err := http.Head(uri);
+	fmt.Printf("Check Version Exists: %s\n", uri);
+	if err != nil {
+		return false;
+	}
+
+	fmt.Printf("status: %d\n", req.StatusCode);
+
+	switch(req.StatusCode) {
+		case 200:
+			return true;
+		case 404:
+			return false;
+		default:
+			os.Exit(-1);
+	}
+
+	return false;
+
 }
+
+
+func findLatestVersionNoAuth(channel string) int {
+
+	lastFound := 1;
+	upperBound := 1;
+
+	for checkVerExist(upperBound, channel) {
+		lastFound = upperBound;
+		upperBound *= 2;
+	}
+
+	for lastFound+1 < upperBound {
+		middle := (upperBound + lastFound) /2;
+		if checkVerExist(middle, channel) {
+			lastFound = middle;
+		} else {
+			upperBound = middle;
+		}
+	}
+
+	return lastFound;
+}
+
 
 func main() {
 
@@ -215,15 +249,23 @@ func main() {
 	installJre();
 
 	if len(os.Args) >= 4 {
-		version, err := strconv.Atoi(os.Args[1]);
 		channel := os.Args[2];
 		username := os.Args[3];
 		uuid := usernameToUuid(username);
+		var version int;
 
-		if err != nil {
-			fmt.Printf("err parsing version: %s\n", err);
-			os.Exit(0);
+		if os.Args[1] == "latest"{
+			version = findLatestVersionNoAuth(channel)
+		} else {
+			arg, err := strconv.Atoi(os.Args[1]);
+			if err != nil {
+				fmt.Printf("err parsing version: %s\n", err);
+				os.Exit(0);
+			}
+
+			version = arg;
 		}
+
 
 		installGame(version, channel);
 		launchGame(version, channel, username, uuid);
