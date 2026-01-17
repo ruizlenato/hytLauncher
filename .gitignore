@@ -3,3 +3,4 @@ token.json
 builds/*
 redist/*
 hytale.exe
+rsrc_windows_amd64.syso

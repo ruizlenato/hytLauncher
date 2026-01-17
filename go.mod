@@ -3,6 +3,7 @@ module hytale
 go 1.25.3
 
 require (
+	bitbucket.org/rj/goey v0.9.1-0.20250403173715-8582ce21557a
 	github.com/google/uuid v1.6.0
 	github.com/itchio/headway v0.0.0-20251229214354-da882c8b5dd4
 	github.com/itchio/lake v0.0.0-20200305150023-cc4284ec2b2a
@@ -35,12 +36,15 @@ require (
 	github.com/itchio/screw v0.0.0-20200301160148-75fc2d65fb38 // indirect
 	github.com/jgallagher/gosaca v0.0.0-20130226042358-754749770f08 // indirect
 	github.com/klauspost/compress v1.10.9 // indirect
+	github.com/lxn/win v0.0.0-20191128105842-2da648fda5b4 // indirect
 	github.com/mitchellh/copystructure v1.0.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/oxtoacart/bpool v0.0.0-20190530202638-03653db5a59c // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	gitlab.com/stone.code/assert v0.0.0-20191212205015-97cac9777adf // indirect
+	golang.org/x/image v0.26.0 // indirect
 	golang.org/x/net v0.0.0-20200602114024-627f9648deb9 // indirect
-	golang.org/x/sys v0.0.0-20200615200032-f1bc736245b1 // indirect
-	golang.org/x/text v0.3.3 // indirect
+	golang.org/x/sys v0.33.0 // indirect
+	golang.org/x/text v0.24.0 // indirect
 	google.golang.org/protobuf v1.24.0 // indirect
 )
