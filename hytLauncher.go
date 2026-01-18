@@ -49,9 +49,13 @@ func download(targetUrl string, saveFilename string, progress func(done int64, t
 	return saveFilename;
 }
 
+func getVersionDownloadsFolder() string {
+	fp := filepath.Join(GameFolder(), "download");
+	return fp;
+}
 
 func getVersionDownloadPath(startVersion int, endVersion int, channel string) string {
-	fp := filepath.Join(GameFolder(), "download", channel, strconv.Itoa(endVersion), strconv.Itoa(startVersion) + "-" + strconv.Itoa(endVersion)+".pwr");
+	fp := filepath.Join(getVersionDownloadsFolder(), channel, strconv.Itoa(endVersion), strconv.Itoa(startVersion) + "-" + strconv.Itoa(endVersion)+".pwr");
 	return fp;
 }
 

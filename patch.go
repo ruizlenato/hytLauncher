@@ -26,6 +26,8 @@ func applyPatch(source string, destination string, patchFilename string) {
 
 
 	patchReader, _ := filesource.Open(patchFilename);
+	defer patchReader.Close();
+
 	p, _ := patcher.New(patchReader, consumer);
 
 	targetPool := fspool.New(p.GetTargetContainer(), source);
