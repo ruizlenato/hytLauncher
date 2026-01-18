@@ -174,11 +174,7 @@ func installGame(version int, channel string, progress func(done int64, total in
 		downloadUrl := guessPatchUrlNoAuth(runtime.GOARCH, runtime.GOOS, channel, closestVersion, version);
 
 		// check if this patch exists, if not fallback on the 0 patch.
-		req, err := http.Head(downloadUrl);
-		if err != nil {
-			panic("Failed to download version");
-		}
-		if req.StatusCode != 200 {
+		if !checkVerExist(closestVersion, version, runtime.GOARCH, runtime.GOOS, channel) {
 			downloadUrl = guessPatchUrlNoAuth(runtime.GOARCH, runtime.GOOS, channel, 0, version);
 		}
 

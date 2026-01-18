@@ -94,9 +94,9 @@ func getVersionManifest(atokens accessTokens, architecture string, operatingSyst
 
 
 
-func checkVerExist(version int, architecture string, operatingSystem string, channel string) bool {
+func checkVerExist(startVersion int, endVersion int, architecture string, operatingSystem string, channel string) bool {
 	for range 5 {
-		uri := guessPatchUrlNoAuth(architecture, operatingSystem, channel, 0, version);
+		uri := guessPatchUrlNoAuth(architecture, operatingSystem, channel, startVersion, endVersion);
 		req, err := http.Head(uri);
 		if err != nil {
 			return false;
@@ -134,10 +134,10 @@ func findLatestVersionNoAuth(current int, architecture string, operatingSystem s
 	curVersion := current;
 
 	// check if has been updates since this; no point if no new versions are added
-	if checkVerExist(current+1, architecture, operatingSystem, channel) {
+	if checkVerExist(0, current+1, architecture, operatingSystem, channel) {
 
 		// multiply version number by 2 until a version is not found ..
-		for checkVerExist(curVersion, architecture, operatingSystem, channel) {
+		for checkVerExist(0, curVersion, architecture, operatingSystem, channel) {
 			lastVersion = curVersion;
 			curVersion *= 2;
 		}
@@ -145,7 +145,7 @@ func findLatestVersionNoAuth(current int, architecture string, operatingSystem s
 		// binary search from last valid, to largest invalid;
 		for lastVersion+1 < curVersion {
 			middle := (curVersion + lastVersion) /2;
-			if checkVerExist(middle, architecture, operatingSystem,channel) {
+			if checkVerExist(0, middle, architecture, operatingSystem,channel) {
 				lastVersion = middle;
 			} else {
 				curVersion = middle;
