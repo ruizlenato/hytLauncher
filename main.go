@@ -168,6 +168,7 @@ func patchLineMenu() base.Widget {
 				OnChange: func(v int) {
 					if wCommune.Patchline != valToChannel(v) {
 						wCommune.Patchline = valToChannel(v);
+						wCommune.SelectedVersion = wCommune.LatestVersions[wCommune.Patchline];
 						updateWindow();
 					}
 				},
