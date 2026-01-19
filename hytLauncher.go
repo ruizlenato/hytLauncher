@@ -259,26 +259,35 @@ func launchGame(version int, channel string, username string, uuid string) {
 	userDir := UserDataFolder()
 	clientBinary := findClientBinary(version, channel);
 
+	if runtime.GOOS == "linux" || runtime.GOOS == "darwin" {
+		os.Chmod(javaBin, 0775);
+		os.Chmod(clientBinary, 0775);
+	}
 
 	if wCommune.Mode == "fakeonline" {
 
 		go runServer();
 
-		// write fakeonline dll
+		var dllName string;
+		var embedName string;
+
 		if runtime.GOOS == "windows" {
-
-			dllName := filepath.Join(filepath.Dir(clientBinary), "Secur32.dll");
-			data, err := embeddedFiles.ReadFile("Aurora/Build/Aurora.dll");
-			if err != nil {
-				panic("failed to read aurora dll");
-			}
-			os.WriteFile(dllName, data, 0777);
-			defer os.Remove(dllName);
-
-		} else {
-			fmt.Printf("Your OS does not support fakeonline.\n");
+			dllName = filepath.Join(filepath.Dir(clientBinary), "Secur32.dll");
+			embedName = path.Join("Aurora", "Build", "Aurora.dll");
 		}
 
+		if runtime.GOOS == "linux" {
+			dllName = filepath.Join(os.TempDir(), "Aurora.so");
+			embedName = path.Join("Aurora", "Build", "Aurora.so");
+		}
+
+		// write fakeonline dll
+		data, err := embeddedFiles.ReadFile(embedName);
+		if err != nil {
+			panic("failed to read aurora dll");
+		}
+		os.WriteFile(dllName, data, 0777);
+		defer os.Remove(dllName);
 
 		e := exec.Command(clientBinary,
 			"--app-dir",
@@ -299,6 +308,12 @@ func launchGame(version int, channel string, username string, uuid string) {
 			generateSessionJwt("hytale:client"));
 
 		fmt.Printf("Running: %s %s\n", clientBinary, strings.Join(e.Args, " "))
+
+		fmt.Printf("DllName: %s\n", dllName);
+
+		if runtime.GOOS == "linux" {
+			os.Setenv("LD_PRELOAD", dllName);
+		}
 
 		e.Start();
 		defer e.Process.Kill();

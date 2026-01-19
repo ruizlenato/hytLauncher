@@ -9,7 +9,7 @@
 #include <wchar.h>
 
 static int swaps = 0;
-static int totalSwaps = 5;
+static int totalSwaps = 6;
 
 int wchar_strlen(const wchar_t * str) {
 	size_t len = 0;
@@ -18,7 +18,6 @@ int wchar_strlen(const wchar_t * str) {
 	} while(*str++ != L'\0');
 	return len-1;
 }
-
 
 typedef struct modinfo {
 	uint8_t* start;
@@ -70,7 +69,8 @@ modinfo get_base() {
 	char line[0x200] = {0};
 	char bin[0x200] = {0};
 
-	readlink("/proc/self/exe", bin, sizeof(bin));
+	int res = readlink("/proc/self/exe", bin, sizeof(bin));
+	assert(res != 0);
 
 	void* begin = 0;
 	size_t end = 0;
@@ -150,13 +150,21 @@ __attribute__((constructor)) int run() {
 
 	for(size_t i = 0; i < inf.sz; i++) {
 
+
+		// replace url prefixes to http ..
 		swap(&memory[i], L"https://account-data.", L"http://127.0.0");
 		swap(&memory[i], L"https://sessions.", L"http://127.0.0");
 		swap(&memory[i], L"https://telemetry.", L"http://127.0.0");
 		swap(&memory[i], L"https://tools.", L"http://127.0.0");
 
+		// swap hytale.com with localhost ..
 		swap(&memory[i], L"hytale.com", L".1:59313");
 
-		if(swaps >= totalSwaps) break;
+    // make local servers still run in offline mode
+		swap(&memory[i], L"authenticated", L"offline");
+
+		//if(swaps >= totalSwaps) break;
 	}
+
+	printf("TOTAL SWAPS: %d\n", swaps);
 }
