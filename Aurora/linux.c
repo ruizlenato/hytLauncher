@@ -8,6 +8,9 @@
 #include <errno.h>
 #include <wchar.h>
 
+static int swaps = 0;
+static int totalSwaps = 5;
+
 int wchar_strlen(const wchar_t * str) {
 	size_t len = 0;
 	do {
@@ -113,9 +116,6 @@ typedef struct csString {
 #define get_size(cstr) ((sizeof(uint32_t) + ((cstr.stringSz) * sizeof(wchar_t)))-1)
 #define get_size_ptr(cstr) ((sizeof(uint32_t) + ((cstr->stringSz) * sizeof(wchar_t)))-1)
 
-static int swaps = 0;
-static int totalSwaps = 6;
-
 #define find(mem, src_str, code) do { csString csSrc = make_csstr(src_str); \
                                         if( memcmp(mem, &csSrc, get_size(csSrc)) == 0 ) { \
                                                 code \
@@ -157,6 +157,6 @@ __attribute__((constructor)) int run() {
 
 		swap(&memory[i], L"hytale.com", L".1:59313");
 
-		if(totalSwaps >= 6) break;
+		if(swaps >= totalSwaps) break;
 	}
 }

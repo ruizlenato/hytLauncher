@@ -23,7 +23,7 @@ typedef struct csString {
 #define get_size_ptr(cstr) ((sizeof(uint32_t) + (cstr->stringSz * sizeof(wchar_t))) + 1)
 
 static int swaps = 0;
-static int totalSwaps = 6;
+static int totalSwaps = 5;
 
 #define find(mem, src_str, code) do { csString csSrc = make_csstr(src_str); \
                                         if( memcmp(mem, &csSrc, get_size(csSrc)) == 0 ) { \
