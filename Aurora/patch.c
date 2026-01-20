@@ -11,20 +11,12 @@ typedef struct swapEntry {
     csString old;
 } swapEntry;
 
-
 void overwrite(csString* old, csString* new) {    
     int prev = get_prot(old);
-    printf("Previous protection level: %x\n", prev);
-    
-    if (change_prot((uintptr_t)old, get_rw_perms()) == 0) {
-        printf("copying .. %p to .. %p\n", new, old);
-        
+
+    if (change_prot((uintptr_t)old, get_rw_perms()) == 0) {            
         int sz = get_size_ptr(new);
         memcpy(old, new, sz);
-#ifdef _WIN32
-        //memset(&((uint8_t*)old)[sz], 0, 2);
-#endif
-
     }
 
     change_prot((uintptr_t)old, prev);
@@ -35,27 +27,20 @@ void allowOfflineInOnline(uint8_t* mem) {
 
     if (PATTERN_PLATFORM) {
 
-        printf("Found debug check @ %p\n", mem);
-
+        
 #ifdef __linux__
         void* target = &mem[13];
 #elif _WIN32
         void* target = &mem[15];
 #endif
         int prev = get_prot(target);
-        printf("Previous protection level %x\n", prev);
-
+        
        
         if (change_prot((uintptr_t)target, get_rw_perms()) == 0) {
             memset(target, 0x90, 0x6);
         }
-        else {
-            printf("Failed to change protection level\n");
-        }
         
-        if (change_prot((uintptr_t)target, prev) != 0) {
-            printf("Failed to change protection level back\n");
-        }
+        change_prot((uintptr_t)target, prev);
 
     }
 
@@ -82,8 +67,7 @@ void changeServers() {
     };
 
     int totalSwaps = (sizeof(swaps) / sizeof(swapEntry));
-    printf("Total Swaps: %x\n", totalSwaps);
-   
+    
     modinfo inf = get_base();
     uint8_t* memory = inf.start;
 
@@ -99,5 +83,4 @@ void changeServers() {
     }
 
 
-    printf("TOTAL SWAPS: %d\n", num_swaps);
 }
